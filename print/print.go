@@ -11,7 +11,7 @@ import (
 var table = tablewriter.NewWriter(os.Stdout)
 
 func init() {
-	table.SetHeader([]string{"F", "id", "title", "description", "level", "ExpirationTime"})
+	table.SetHeader([]string{"F", "id", "title", "description", "level", "ExpirationTime", "CreatedTime"})
 	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 	table.SetCenterSeparator("|")
 }
@@ -24,6 +24,7 @@ func PrintSingle(m model.Todo) {
 		m.Description,
 		fmt.Sprint(m.Level),
 		m.ExpirationTime,
+		m.CreatedTime,
 	})
 
 	table.Render()
@@ -38,6 +39,7 @@ func PrintList(ms []model.Todo) {
 			m.Description,
 			fmt.Sprint(m.Level),
 			m.ExpirationTime,
+			m.CreatedTime,
 		})
 	}
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 	"todoz/model"
 )
 
@@ -33,8 +34,10 @@ var ActionMap = map[string]Action{
 
 func Parse() Args {
 	var (
-		f    *flag.FlagSet
-		args = Args{}
+		f        *flag.FlagSet
+		args     = Args{}
+		duration time.Duration
+		//format   = "2006-01-02-15"
 	)
 
 	// 初始化自定义flag
@@ -57,16 +60,24 @@ func Parse() Args {
 			f.StringVar(&args.Title, "title", "", "todo title")
 			f.StringVar(&args.Description, "description", "", "todo description")
 			f.IntVar(&args.Level, "level", 1, "todo level")
+			f.DurationVar(&duration, "time", time.Hour, "todo expiration time")
+
+			f.Parse(os.Args[2:])
 
 		case FINISH:
 			f.Uint64Var(&args.Id, "id", 0, "finish todo id ; if not provide , finish now todo !")
-
+			f.Parse(os.Args[2:])
 		case LIST:
 			f.IntVar(&args.Page, "page", 1, "list page")
 			f.IntVar(&args.Size, "size", 10, "list page size")
+			f.Parse(os.Args[2:])
 		}
 
-		f.Parse(os.Args[2:])
+	}
+
+	if args.Action == ADD {
+		args.CreatedTime = time.Now().Format(time.RFC3339)
+		args.ExpirationTime = time.Now().Add(duration).Format(time.RFC3339)
 	}
 
 	return args

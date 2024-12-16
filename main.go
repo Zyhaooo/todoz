@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"todoz/args"
+	"todoz/data"
 	"todoz/model"
 	"todoz/print"
 )
@@ -38,17 +40,25 @@ var todos = []model.Todo{
 
 func main() {
 	var (
-		as args.Args
+		as   args.Args
+		todo model.Todo
 	)
 
 	as = args.Parse()
 
 	switch as.Action {
 	case args.ADD:
+		data.AddTodo(as.Todo)
+		fmt.Println("Done!")
 	case args.FINISH:
+		data.FinishTodo(as.Id)
+		fmt.Println("Done!")
 	case args.LIST:
+		todos = data.GetTodoList(as.Page, as.Size)
 		print.PrintList(todos)
 	default:
-		print.PrintSingle(todos[0])
+		todo = data.GetCurrentTodo()
+		print.PrintSingle(todo)
 	}
+
 }
